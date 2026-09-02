@@ -42,7 +42,6 @@ bool read_from_owon() {
     while (i < sizeof(read_buffer) - 1) {
         uint8_t c;
         int rx_bytes = uart_read_bytes(UART_NUM_1, &c, 1, pdMS_TO_TICKS(200));
-        //ESP_LOGI(TAG, "rx_bytes:%d, byte:%X", rx_bytes, c);
         if (rx_bytes <= 0) {
             ESP_LOGI(TAG, "rx_bytes:%d", rx_bytes);
             retry_count++;
@@ -62,7 +61,6 @@ bool read_from_owon() {
         }
         if (c == '\n') {
             read_buffer[i] = '\0'; // Null-terminate read_buffer safely and skip line feed
-            size_t input_len = strlen(read_buffer);
             return strlen(read_buffer) > 0;
         }        
         read_buffer[i++] = (char)c;
