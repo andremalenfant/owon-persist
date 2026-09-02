@@ -6,14 +6,12 @@
 #include "storage.h"
 #include "xdm1041.h"
 
-#define KEYPAD_TX GPIO_NUM_0
-#define KEYPAD_RX GPIO_NUM_1
+#define OWON_TX GPIO_NUM_0
+#define OWON_RX GPIO_NUM_1
 #define TAG "OWON-PERSIST"
 #define STORAGE_NAMESPACE TAG
 
 char PATTERN_SOFT_START[] = {0x00,0x01,0x00};
-
-TaskHandle_t poll_task_handle = NULL;
 
 char write_buffer[100];
 char read_buffer[100];
@@ -139,6 +137,19 @@ void write_to_owon(char *command) {
 }
 
 
+void read_stored_values() {
+    current_function = get_int(FUNC, (int)FUNC_UNKOWN);
+    current_rate = get_int(RATE, (int)RATE_FAST);
+    for (int i = 0; i < ARRAY_SIZE(owon_functions); i++) {
+        if (owon_functions[i].auto_storage_key != NULL) {
+            owon_functions[i].auto_value = get_int(owon_functions[i].auto_storage_key, 0);        
+        }
+        if (owon_functions[i].range_storage_key != NULL) {
+            owon_functions[i].range_value = get_int(owon_functions[i].range_storage_key, 0);        
+        }
+    }
+}
+
 void write_stored_settings() {
     memset(write_buffer, 0, sizeof(write_buffer));
     if (owon_functions[current_function].auto_value) {
@@ -155,20 +166,7 @@ void write_stored_settings() {
     write_to_owon(write_buffer);\
 }
 
-void read_stored_values() {
-    current_function = get_int(FUNC, (int)FUNC_UNKOWN);
-    current_rate = get_int(RATE, (int)RATE_FAST);
-    for (int i = 0; i < ARRAY_SIZE(owon_functions); i++) {
-        if (owon_functions[i].auto_storage_key != NULL) {
-            owon_functions[i].auto_value = get_int(owon_functions[i].auto_storage_key, 0);        
-        }
-        if (owon_functions[i].range_storage_key != NULL) {
-            owon_functions[i].range_value = get_int(owon_functions[i].range_storage_key, 0);        
-        }
-    }
-}
-
-void poll_task( void * pvParameters ) {
+void poll_task(void *pvParameters) {
     while(true) {
         query_owon(FUNC);
         query_owon(RATE);
@@ -187,7 +185,7 @@ void init_serial() {
         .source_clk = UART_SCLK_DEFAULT,
     };
     ESP_ERROR_CHECK(uart_param_config(UART_NUM_1, &uart_config));
-    ESP_ERROR_CHECK(uart_set_pin(UART_NUM_1, KEYPAD_TX, KEYPAD_RX, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
+    ESP_ERROR_CHECK(uart_set_pin(UART_NUM_1, OWON_TX, OWON_RX, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
     ESP_ERROR_CHECK(uart_driver_install(UART_NUM_1, 1024, 1024, 0, NULL, 0));
 }
 
@@ -198,5 +196,5 @@ void app_main() {
     init_serial();
     vTaskDelay(pdMS_TO_TICKS(200));
     write_stored_settings();
-    xTaskCreate(poll_task, "poll_task", 2096, NULL, tskIDLE_PRIORITY + 1, &poll_task_handle);
+    xTaskCreate(poll_task, "poll_task", 2096, NULL, tskIDLE_PRIORITY + 1, NULL);
 }

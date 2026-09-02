@@ -1,7 +1,5 @@
 #pragma once
 
-#define TAG "OWON-PERSIST"
-
 #define RATE  "RATE"
 #define FUNC  "FUNC1"
 #define RANGE "RANGE"
