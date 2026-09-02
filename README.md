@@ -1,6 +1,6 @@
-An ESP32-C3 add-on to the OWON XDM1041 Multi-meter to add the persistence of configured settings.
+# An ESP32-C3 add-on to the OWON XDM1041 Multi-meter to add the persistence of configured settings.
 
-Inpired by the work of:
+## Inpired by the work of:
   - TheHWCave for it's great documentation that is much better than owon's (https://github.com/TheHWcave/OWON-XDM1041/tree/main)
   - jantman (https://github.com/jantman/owon-xdm1041-server)
   - Elektroarzt (https://github.com/Elektroarzt/owon-xdm-remote)
@@ -15,7 +15,7 @@ It covers function, speed, auto range and manual ranges for Volt/Amp/Res/Cap. Th
 
 The code might seem complicated at first, but the protocol implementation is quite inconsistent and it requires some gymnastics to avoid ugly branching everywhere.
 
-Installation
+## Installation
 
   - Build and flash with platformio
   - Connect RX and TX pin and PWR following the wiring in Elektroarzt (https://github.com/Elektroarzt/owon-xdm-remote)
