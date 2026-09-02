@@ -160,7 +160,7 @@ void write_stored_settings() {
     }
     write_to_owon(write_buffer);
     sprintf(write_buffer, "%s %s\n", RATE, rates[current_rate].rxtx_values.tx_value);
-    write_to_owon(write_buffer);\
+    write_to_owon(write_buffer);
 }
 
 void poll_task(void *pvParameters) {
