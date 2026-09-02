@@ -20,3 +20,4 @@ The code might seem complicated at first, but the protocol implementation is qui
   - Build and flash with platformio
   - Connect RX and TX pin and PWR following the wiring in Elektroarzt (https://github.com/Elektroarzt/owon-xdm-remote)
   - Included is a stl of a bracket to replace the OWON USB module. Just hot glue the ESP32-C3 to the flat and screw in the back of the multi-meter.
+    source is at (https://cad.onshape.com/documents/60df04ce48f593a59c6e88b8/w/1018ae08cf5737908650381d/e/8b86b4a0dd7aa8b6646feab4)
