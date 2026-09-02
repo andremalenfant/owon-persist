@@ -65,8 +65,6 @@ bool read_from_owon() {
         }        
         read_buffer[i++] = (char)c;
         if (i >= 3) {
-            char three[3];
-            memcpy(three, &read_buffer[i-3],3);
             if (memcmp(&read_buffer[i-3], &PATTERN_SOFT_START, 3) == 0) {
                 ESP_LOGI(TAG, "Soft Start Detected");
                 esp_restart();
