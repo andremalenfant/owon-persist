@@ -74,6 +74,7 @@ typedef enum {
     TEMP,
 } FunctionCode;
 
+// Adding an unknow value because the multi-meter starts ranges at 1
 struct RxTxValues vdc_ranges[] = {
     {.rx_value="UNKNOWN", .tx_value="0"},
     {.rx_value="50 mV", .tx_value="50E-3"},

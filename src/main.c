@@ -79,7 +79,6 @@ bool read_from_owon() {
 }
 
 void decode_and_store_value(char *command) {
-    bool save = false;
     switch (get_command_code(command)) {
         case CMD_FUNC:
             struct SettingDescriptor function = get_function(owon_functions, ARRAY_SIZE(owon_functions), read_buffer);
