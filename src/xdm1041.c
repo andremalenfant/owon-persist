@@ -5,21 +5,22 @@
 
 struct SettingDescriptor owon_functions[] = {
     {.code=FUNC_UNKOWN, .rxtx_values={.rx_value="UNKNOWN", .tx_value="UNKNOWN"}},
-    {.code=VOLT_DC, .rxtx_values={.rx_value="VOLT", .tx_value="VOLT:DC"}, .range_storage_key="RANGEVDC", .range_rx_getter=get_vdc_range, .range_tx_getter=get_tx_vdc_range, .auto_storage_key="AUTOVDC"},
-    {.code=VOLT_AC, .rxtx_values={.rx_value="VOLT AC", .tx_value="VOLT:AC"}, .range_storage_key="RANGEVAC", .range_rx_getter=get_vac_range, .range_tx_getter=get_tx_vac_range, .auto_storage_key="AUTOVAC"},
-    {.code=CURR_DC, .rxtx_values={.rx_value="CURR", .tx_value="CURR:DC"}, .range_storage_key="RANGEADC", .range_rx_getter=get_curr_range, .range_tx_getter=get_tx_curr_range, .auto_storage_key="AUTOADC"},
-    {.code=CURR_AC, .rxtx_values={.rx_value="CURR AC", .tx_value="CURR:AC"}, .range_storage_key="RANGEAAC", .range_rx_getter=get_curr_range, .range_tx_getter=get_tx_curr_range, .auto_storage_key="AUTOAAC"},
+    {.code=VOLT_DC, .rxtx_values={.rx_value="VOLT", .tx_value="VOLT:DC"}, .rate_applicable=true, .range_storage_key="RANGEVDC", .range_rx_getter=get_vdc_range, .range_tx_getter=get_tx_vdc_range, .auto_storage_key="AUTOVDC"},
+    {.code=VOLT_AC, .rxtx_values={.rx_value="VOLT AC", .tx_value="VOLT:AC"}, .rate_applicable=true, .range_storage_key="RANGEVAC", .range_rx_getter=get_vac_range, .range_tx_getter=get_tx_vac_range, .auto_storage_key="AUTOVAC"},
+    {.code=CURR_DC, .rxtx_values={.rx_value="CURR", .tx_value="CURR:DC"}, .rate_applicable=true, .range_storage_key="RANGEADC", .range_rx_getter=get_curr_range, .range_tx_getter=get_tx_curr_range, .auto_storage_key="AUTOADC"},
+    {.code=CURR_AC, .rxtx_values={.rx_value="CURR AC", .tx_value="CURR:AC"}, .rate_applicable=true, .range_storage_key="RANGEAAC", .range_rx_getter=get_curr_range, .range_tx_getter=get_tx_curr_range, .auto_storage_key="AUTOAAC"},
     {.code=FREQ, .rxtx_values={.rx_value="FREQ", .tx_value="FREQ"}},
     {.code=PER, .rxtx_values={.rx_value="PER", .tx_value="PER"}},
     {.code=CAP, .rxtx_values={.rx_value="CAP", .tx_value="CAP"}, .range_storage_key="RANGECAP", .range_rx_getter=get_cap_range, .range_tx_getter=get_tx_cap_range, .auto_storage_key="AUTOCAP"},
     {.code=CONT, .rxtx_values={.rx_value="CONT", .tx_value="CONT"}},
     {.code=DIOD, .rxtx_values={.rx_value="DIOD", .tx_value="DIOD"}},
     {.code=FRES, .rxtx_values={.rx_value="FRES", .tx_value="FRES"}},
-    {.code=RES, .rxtx_values={.rx_value="RES", .tx_value="RES"}, .range_storage_key="RANGERES", .range_rx_getter=&get_res_range, .range_tx_getter=get_tx_res_range, .auto_storage_key="AUTORES"},
+    {.code=RES, .rxtx_values={.rx_value="RES", .tx_value="RES"}, .rate_applicable=true, .range_storage_key="RANGERES", .range_rx_getter=&get_res_range, .range_tx_getter=get_tx_res_range, .auto_storage_key="AUTORES"},
     {.code=TEMP, .rxtx_values={.rx_value="TEMP", .tx_value="TEMP"}}
 };
 
 struct SettingDescriptor rates[] = {
+    {.code=RATE_UNKNOWN, .rxtx_values={.rx_value="", .tx_value=""}},
     {.code=RATE_FAST, .rxtx_values={.rx_value="F", .tx_value="F"}},
     {.code=RATE_SLOW, .rxtx_values={.rx_value="S", .tx_value="S"}},
     {.code=RATE_MED, .rxtx_values={.rx_value="M", .tx_value="M"}}
@@ -27,7 +28,7 @@ struct SettingDescriptor rates[] = {
 
 // Adding an unknow value because the multi-meter starts ranges at 1
 struct RxTxValues vdc_ranges[] = {
-    {.rx_value="UNKNOWN", .tx_value="0"},
+    {.rx_value="UNKNOWN", .tx_value=""},
     {.rx_value="50 mV", .tx_value="50E-3"},
     {.rx_value="500 mV", .tx_value="500E-3"},
     {.rx_value="5 V", .tx_value="5"},
@@ -37,7 +38,7 @@ struct RxTxValues vdc_ranges[] = {
 };
 
 struct RxTxValues vac_ranges[] = {
-    {.rx_value="UNKNOWN", .tx_value="0"},
+    {.rx_value="UNKNOWN", .tx_value=""},
     {.rx_value="500 mV", .tx_value="500E-3"},
     {.rx_value="5 V", .tx_value="5"},
     {.rx_value="50 V", .tx_value="50"},

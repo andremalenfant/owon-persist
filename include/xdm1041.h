@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 #define TAG "OWON-PERSIST"
 #define STORAGE_NAMESPACE TAG
 
@@ -24,6 +26,7 @@ struct SettingDescriptor {
     char *auto_storage_key;
     int auto_value;
     char* (*range_tx_getter)(int);
+    bool rate_applicable;
 };
 
 typedef enum {
@@ -35,6 +38,7 @@ typedef enum {
 } CommandCode;
 
 typedef enum {
+    RATE_UNKNOWN,
     RATE_FAST,
     RATE_MED,
     RATE_SLOW

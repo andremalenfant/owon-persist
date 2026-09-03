@@ -4,6 +4,7 @@
 #include "esp_timer.h"
 #include "esp_log.h"
 #include "xdm1041.h"
+#include <errno.h>
 
 #define OWON_TX GPIO_NUM_0
 #define OWON_RX GPIO_NUM_1
@@ -25,7 +26,7 @@ bool read_from_owon() {
         int rx_bytes = uart_read_bytes(UART_NUM_1, &c, 1, pdMS_TO_TICKS(200));
         if (rx_bytes <= 0) {
             retry_count++;
-            if (retry_count >= 5) {
+            if (retry_count >= 10) {
                 ESP_LOGI(TAG, "no response in %d tries", retry_count);
                 return false;
             } else {
@@ -55,43 +56,46 @@ bool read_from_owon() {
     return false;
 }
 
-void decode_and_store_value(char *command) {
+bool decode_and_store_value(char *command) {
     switch (get_command_code(command)) {
         case CMD_FUNC:
             struct SettingDescriptor function = get_function(read_buffer);
-            if (current_function != function.code) {
+            if (function.code != FUNC_UNKOWN && current_function != function.code) {
                 current_function = function.code;
                 set_int_setting(command, (int)current_function);
             }
-            break;
+            return function.code != FUNC_UNKOWN;
         case CMD_RATE:
             struct SettingDescriptor rate = get_rate(read_buffer);
-            if (current_rate != rate.code) {
+            if (rate.code != RATE_UNKNOWN && current_rate != rate.code) {
                 current_rate = rate.code;
                 set_int_setting(command, (int)current_rate);
             }
-            break;
+            return rate.code != RATE_UNKNOWN;
         case CMD_AUTO:
             struct SettingDescriptor *current_range_function = &get_functions()[current_function];
-            int new_value = atoi(read_buffer);
-            if (current_range_function->auto_storage_key != NULL) {
+            //int new_value = atoi(read_buffer);
+            char *endptr;
+            long new_value = strtol(read_buffer, &endptr, 10);
+            if (*endptr == '\0' && current_range_function->auto_storage_key != NULL) {
                 if (current_range_function->auto_value != new_value) {
                     current_range_function->auto_value = new_value;
                     set_int_setting(current_range_function->auto_storage_key, current_range_function->auto_value);
                 }
             }
-            break;
+            return *endptr == '\0';
         case CMD_RANGE:
             current_range_function = &get_functions()[current_function];
             if (current_range_function->range_storage_key != NULL) {
                 int new_value = current_range_function->range_rx_getter(read_buffer);
-                if (current_range_function->range_value != new_value) {
+                if (new_value != 0 && current_range_function->range_value != new_value) {
                     current_range_function->range_value = new_value;
                     set_int_setting(current_range_function->range_storage_key, current_range_function->range_value);
                 }
             }
-            break;
+            return new_value != 0;
     }
+    return false;
 }
 
 void query_owon(char *command) {
@@ -100,8 +104,11 @@ void query_owon(char *command) {
     ESP_LOGI(TAG, "Requesting %s", command);
     uart_write_bytes(UART_NUM_1, write_buffer, strlen(write_buffer));
     if (read_from_owon()) {
-        decode_and_store_value(command);
-        ESP_LOGI(TAG, "%s = %s", command, read_buffer);
+        if (decode_and_store_value(command)) {
+            ESP_LOGI(TAG, "%s = %s", command, read_buffer);
+        } else {
+            ESP_LOGI(TAG, "ignoring %s = %s", command, read_buffer);
+        }
     }   
     vTaskDelay(pdMS_TO_TICKS(1000));
 }
@@ -113,7 +120,7 @@ void write_to_owon(char *command) {
 }
 
 
-void read_stored_values() {
+void read_stored_settings() {
     current_function = get_int_setting(FUNC, (int)FUNC_UNKOWN);
     current_rate = get_int_setting(RATE, (int)RATE_FAST);
     for (int i = 0; i < get_function_count(); i++) {
@@ -143,9 +150,14 @@ void write_stored_settings() {
 void poll_task(void *pvParameters) {
     while(true) {
         query_owon(FUNC);
-        query_owon(RATE);
+        struct SettingDescriptor *current_function_desc = &get_functions()[current_function];
+        if (current_function_desc->rate_applicable) {
+            query_owon(RATE);
+        }
         query_owon(AUTO);
-        query_owon(RANGE);
+        if (current_function_desc->range_storage_key != NULL) {
+            query_owon(RANGE);
+        }    
     }
 }
 
@@ -166,7 +178,7 @@ void init_serial() {
 void app_main() {
     nvs_flash_init();    
     vTaskDelay(pdMS_TO_TICKS(5000));
-    read_stored_values();
+    read_stored_settings();
     init_serial();
     vTaskDelay(pdMS_TO_TICKS(200));
     write_stored_settings();
