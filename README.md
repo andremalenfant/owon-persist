@@ -11,7 +11,7 @@ One of the annoying this about the multi-meter is it does not store configuratio
 
 On power-up, cold or warm, these settings are then pushed back to the multi-meter.
 
-It covers function, speed, auto range and manual ranges for Volt/Amp/Res/Cap. The frequency ranges and temperature probe type are not yet implemented.
+It covers function, speed, auto range and manual ranges for Volt/Amp/Res/Cap. The frequency ranges and temperature probe type are not completely implemented.
 
 The code might seem complicated at first, but the protocol implementation is quite inconsistent and it requires some gymnastics to avoid ugly branching everywhere.
 
