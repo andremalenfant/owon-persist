@@ -16,7 +16,7 @@ struct SettingDescriptor owon_functions[] = {
     {.code=DIOD, .rxtx_values={.rx_value="DIOD", .tx_value="DIOD"}},
     {.code=FRES, .rxtx_values={.rx_value="FRES", .tx_value="FRES"}},
     {.code=RES, .rxtx_values={.rx_value="RES", .tx_value="RES"}, .rate_applicable=true, .range_storage_key="RANGERES", .range_rx_getter=&get_res_range, .range_tx_getter=get_tx_res_range, .auto_storage_key="AUTORES"},
-    {.code=TEMP, .rxtx_values={.rx_value="TEMP", .tx_value="TEMP"}}
+    {.code=TEMP, .rxtx_values={.rx_value="TEMP", .tx_value="TEMP"}, .range_storage_key="RANGETEMP", .range_rx_getter=get_temp_range, .range_tx_getter=get_tx_temp_range}
 };
 
 struct SettingDescriptor rates[] = {
@@ -75,6 +75,12 @@ struct RxTxValues cap_ranges[] = {
     {.rx_value="500uF", .tx_value="500E-6"},
     {.rx_value="5 mF", .tx_value="5E-3"},     
     {.rx_value="50 mF", .tx_value="50E-3"} 
+};
+
+struct RxTxValues temp_ranges[] = {
+    {.rx_value="UNKNOWN", .tx_value="0"},
+    {.rx_value="Pt100", .tx_value="PT100"},
+    {.rx_value="KITS90", .tx_value="KITS90"}
 };
 
 int get_int_setting(const char *key, int default_value) {
@@ -168,6 +174,15 @@ int get_cap_range(char* range_string) {
 char* get_tx_cap_range(int current_range) {
     return cap_ranges[current_range].tx_value;
 }
+
+int get_temp_range(char* range_string) {
+    return get_range(range_string, temp_ranges, ARRAY_SIZE(temp_ranges));
+}
+
+char* get_tx_temp_range(int current_range) {
+    return temp_ranges[current_range].tx_value;
+}
+
 
 int get_function_count() {
     return ARRAY_SIZE(owon_functions);

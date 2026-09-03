@@ -86,4 +86,6 @@ int get_res_range(char* range_string);
 char* get_tx_res_range(int current_range);
 int get_cap_range(char* range_string);
 char* get_tx_cap_range(int current_range);
+int get_temp_range(char* range_string);
+char* get_tx_temp_range(int current_range);
 struct SettingDescriptor get_function(char* function_string);

@@ -74,16 +74,15 @@ bool decode_and_store_value(char *command) {
             return rate.code != RATE_UNKNOWN;
         case CMD_AUTO:
             struct SettingDescriptor *current_range_function = &get_functions()[current_function];
-            //int new_value = atoi(read_buffer);
-            char *endptr;
-            long new_value = strtol(read_buffer, &endptr, 10);
-            if (*endptr == '\0' && current_range_function->auto_storage_key != NULL) {
-                if (current_range_function->auto_value != new_value) {
+            if (current_range_function->auto_storage_key != NULL) {
+                char *endptr;
+                long new_value = strtol(read_buffer, &endptr, 10);
+                if (*endptr == '\0' && current_range_function->auto_value != new_value) {
                     current_range_function->auto_value = new_value;
                     set_int_setting(current_range_function->auto_storage_key, current_range_function->auto_value);
                 }
+                return *endptr == '\0';
             }
-            return *endptr == '\0';
         case CMD_RANGE:
             current_range_function = &get_functions()[current_function];
             if (current_range_function->range_storage_key != NULL) {
@@ -92,8 +91,8 @@ bool decode_and_store_value(char *command) {
                     current_range_function->range_value = new_value;
                     set_int_setting(current_range_function->range_storage_key, current_range_function->range_value);
                 }
+                return new_value != 0;
             }
-            return new_value != 0;
     }
     return false;
 }
@@ -154,7 +153,9 @@ void poll_task(void *pvParameters) {
         if (current_function_desc->rate_applicable) {
             query_owon(RATE);
         }
-        query_owon(AUTO);
+        if (current_function_desc->auto_storage_key != NULL) {
+            query_owon(AUTO);
+        }
         if (current_function_desc->range_storage_key != NULL) {
             query_owon(RANGE);
         }    
