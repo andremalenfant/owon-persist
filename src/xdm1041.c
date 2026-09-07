@@ -88,7 +88,7 @@ int get_int_setting(const char *key, int default_value) {
     esp_err_t ret = nvs_open(STORAGE_NAMESPACE, NVS_READWRITE, &handle);
     if (ret == ESP_OK) {
         int value;
-        ret = nvs_get_i32(handle, key, (uint32_t*)&value);        
+        ret = nvs_get_i32(handle, key, (int32_t*)&value);        
         if (ret == ESP_OK) {
             ESP_LOGI(TAG, "Read value for %s = %d", key, value);
             return value;

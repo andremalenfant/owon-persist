@@ -82,6 +82,8 @@ bool decode_and_store_value(char *command) {
                     set_int_setting(current_range_function->auto_storage_key, current_range_function->auto_value);
                 }
                 return *endptr == '\0';
+            } else {
+                return false;
             }
         case CMD_RANGE:
             current_range_function = &get_functions()[current_function];
@@ -92,9 +94,12 @@ bool decode_and_store_value(char *command) {
                     set_int_setting(current_range_function->range_storage_key, current_range_function->range_value);
                 }
                 return new_value != 0;
+            } else {
+                return false;
             }
+        default:
+            return false;
     }
-    return false;
 }
 
 void query_owon(char *command) {
