@@ -59,21 +59,21 @@ bool read_from_owon() {
 bool decode_and_store_value(char *command) {
     switch (get_command_code(command)) {
         case CMD_FUNC:
-            struct SettingDescriptor function = get_function(read_buffer);
+            SettingDescriptor function = get_function(read_buffer);
             if (function.code != FUNC_UNKOWN && current_function != function.code) {
                 current_function = function.code;
                 set_int_setting(command, (int)current_function);
             }
             return function.code != FUNC_UNKOWN;
         case CMD_RATE:
-            struct SettingDescriptor rate = get_rate(read_buffer);
+            SettingDescriptor rate = get_rate(read_buffer);
             if (rate.code != RATE_UNKNOWN && current_rate != rate.code) {
                 current_rate = rate.code;
                 set_int_setting(command, (int)current_rate);
             }
             return rate.code != RATE_UNKNOWN;
         case CMD_AUTO:
-            struct SettingDescriptor *current_range_function = &get_functions()[current_function];
+            SettingDescriptor *current_range_function = &get_functions()[current_function];
             if (current_range_function->auto_storage_key != NULL) {
                 char *endptr;
                 long new_value = strtol(read_buffer, &endptr, 10);
@@ -134,7 +134,7 @@ void read_stored_settings() {
 
 void write_stored_settings() {
     memset(write_buffer, 0, sizeof(write_buffer));
-    struct SettingDescriptor *current_function_desc = &get_functions()[current_function];
+    SettingDescriptor *current_function_desc = &get_functions()[current_function];
     if (current_function_desc->range_storage_key != NULL && current_function_desc->auto_value == 0) {
         char *range = current_function_desc->range_tx_getter(current_function_desc->range_value);
         sprintf(write_buffer, "CONF:%s %s\n", current_function_desc->rxtx_values.tx_value, range);       
@@ -149,7 +149,7 @@ void write_stored_settings() {
 void poll_task(void *pvParameters) {
     while(true) {
         query_owon(FUNC);
-        struct SettingDescriptor *current_function_desc = &get_functions()[current_function];
+        SettingDescriptor *current_function_desc = &get_functions()[current_function];
         if (current_function_desc->rate_applicable) {
             query_owon(RATE);
         }

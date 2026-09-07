@@ -3,7 +3,7 @@
 #include "nvs_flash.h"
 #include "esp_log.h"
 
-struct SettingDescriptor owon_functions[] = {
+SettingDescriptor owon_functions[] = {
     {.code=FUNC_UNKOWN, .rxtx_values={.rx_value="UNKNOWN", .tx_value="UNKNOWN"}},
     {.code=VOLT_DC, .rxtx_values={.rx_value="VOLT", .tx_value="VOLT:DC"}, .rate_applicable=true, .range_storage_key="RANGEVDC", .range_rx_getter=get_vdc_range, .range_tx_getter=get_tx_vdc_range, .auto_storage_key="AUTOVDC"},
     {.code=VOLT_AC, .rxtx_values={.rx_value="VOLT AC", .tx_value="VOLT:AC"}, .rate_applicable=true, .range_storage_key="RANGEVAC", .range_rx_getter=get_vac_range, .range_tx_getter=get_tx_vac_range, .auto_storage_key="AUTOVAC"},
@@ -19,7 +19,7 @@ struct SettingDescriptor owon_functions[] = {
     {.code=TEMP, .rxtx_values={.rx_value="TEMP", .tx_value="TEMP"}, .range_storage_key="RANGETEMP", .range_rx_getter=get_temp_range, .range_tx_getter=get_tx_temp_range}
 };
 
-struct SettingDescriptor rates[] = {
+SettingDescriptor rates[] = {
     {.code=RATE_UNKNOWN, .rxtx_values={.rx_value="", .tx_value=""}},
     {.code=RATE_FAST, .rxtx_values={.rx_value="F", .tx_value="F"}},
     {.code=RATE_SLOW, .rxtx_values={.rx_value="S", .tx_value="S"}},
@@ -27,7 +27,7 @@ struct SettingDescriptor rates[] = {
 };
 
 // Adding an unknow value because the multi-meter starts ranges at 1
-struct RxTxValues vdc_ranges[] = {
+RxTxValues vdc_ranges[] = {
     {.rx_value="UNKNOWN", .tx_value=""},
     {.rx_value="50 mV", .tx_value="50E-3"},
     {.rx_value="500 mV", .tx_value="500E-3"},
@@ -37,7 +37,7 @@ struct RxTxValues vdc_ranges[] = {
     {.rx_value="1000 V", .tx_value="1000"}
 };
 
-struct RxTxValues vac_ranges[] = {
+RxTxValues vac_ranges[] = {
     {.rx_value="UNKNOWN", .tx_value=""},
     {.rx_value="500 mV", .tx_value="500E-3"},
     {.rx_value="5 V", .tx_value="5"},
@@ -46,7 +46,7 @@ struct RxTxValues vac_ranges[] = {
     {.rx_value="750 V", .tx_value="750"}
 };
 
-struct RxTxValues curr_ranges[] = {
+RxTxValues curr_ranges[] = {
     {.rx_value="UNKNOWN", .tx_value="0"},
     {.rx_value="500 uA", .tx_value="500E-6"},
     {.rx_value="5 mA", .tx_value="5E-3"},
@@ -56,7 +56,7 @@ struct RxTxValues curr_ranges[] = {
     {.rx_value="10 A", .tx_value="10"}
 };
 
-struct RxTxValues res_ranges[] = {
+RxTxValues res_ranges[] = {
     {.rx_value="UNKNOWN", .tx_value="0"},
     {.rx_value="500 Ω", .tx_value="500"},
     {.rx_value="5 KΩ", .tx_value="5E3"},
@@ -66,7 +66,7 @@ struct RxTxValues res_ranges[] = {
     {.rx_value="50 MΩ", .tx_value="50E6"} 
 };
 
-struct RxTxValues cap_ranges[] = {
+RxTxValues cap_ranges[] = {
     {.rx_value="UNKNOWN", .tx_value="0"},
     {.rx_value="50 nF", .tx_value="50E-9"},
     {.rx_value="500 nF", .tx_value="500E-9"},
@@ -77,7 +77,7 @@ struct RxTxValues cap_ranges[] = {
     {.rx_value="50 mF", .tx_value="50E-3"} 
 };
 
-struct RxTxValues temp_ranges[] = {
+RxTxValues temp_ranges[] = {
     {.rx_value="UNKNOWN", .tx_value="0"},
     {.rx_value="Pt100", .tx_value="PT100"},
     {.rx_value="KITS90", .tx_value="KITS90"}
@@ -121,14 +121,14 @@ CommandCode get_command_code(const char *str) {
     return CMD_UNKNOWN;
 }
 
-struct SettingDescriptor get_rate(char* rate_value) {
+SettingDescriptor get_rate(char* rate_value) {
     for (int i = 0; i < ARRAY_SIZE(rates); i++) {
         if (strcmp(rate_value, rates[i].rxtx_values.rx_value) == 0) return rates[i];
     }
     return rates[0];
 }
 
-int get_range(char* range_string, struct RxTxValues ranges[], int item_count) {
+int get_range(char* range_string, RxTxValues ranges[], int item_count) {
     for (int i = 0; i < item_count; i++) {
         if (strcmp(ranges[i].rx_value, range_string) == 0) return i;
     }
@@ -188,11 +188,11 @@ int get_function_count() {
     return ARRAY_SIZE(owon_functions);
 }
 
-struct SettingDescriptor *get_functions() {
+SettingDescriptor *get_functions() {
     return owon_functions;
 }
 
-struct SettingDescriptor get_function(char* function_string) {
+SettingDescriptor get_function(char* function_string) {
     for (int i = 0; i < get_function_count(); i++) {
         if (strcmp(owon_functions[i].rxtx_values.rx_value, function_string) == 0) return owon_functions[i];
     }

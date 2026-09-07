@@ -12,14 +12,14 @@
 
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 
-struct RxTxValues {
+typedef struct {
     char* rx_value;
     char* tx_value;
-};
+} RxTxValues;
 
-struct SettingDescriptor {
+typedef struct {
     int code;
-    struct RxTxValues rxtx_values;
+    RxTxValues rxtx_values;
     char *range_storage_key;
     int (*range_rx_getter)(char*);
     int range_value;
@@ -27,7 +27,7 @@ struct SettingDescriptor {
     int auto_value;
     char* (*range_tx_getter)(int);
     bool rate_applicable;
-};
+} SettingDescriptor;
 
 typedef enum {
     CMD_UNKNOWN,
@@ -61,21 +61,21 @@ typedef enum {
 } FunctionCode;
 
 //declared in xdm1041.c to share it with main
-extern struct SettingDescriptor owon_functions[];
-extern struct SettingDescriptor rates[];
-extern struct RxTxValues vdc_ranges[];
-extern struct RxTxValues vac_ranges[];
-extern struct RxTxValues curr_ranges[];
-extern struct RxTxValues res_ranges[];
-extern struct RxTxValues cap_ranges[];
+extern SettingDescriptor owon_functions[];
+extern SettingDescriptor rates[];
+extern RxTxValues vdc_ranges[];
+extern RxTxValues vac_ranges[];
+extern RxTxValues curr_ranges[];
+extern RxTxValues res_ranges[];
+extern RxTxValues cap_ranges[];
 
 int get_int_setting(const char *key, int default_value);
 void set_int_setting(const char *key, int value);
 
 int get_function_count();
-struct SettingDescriptor *get_functions();
+SettingDescriptor *get_functions();
 CommandCode get_command_code(const char *str);
-struct SettingDescriptor get_rate(char* rate_value);
+SettingDescriptor get_rate(char* rate_value);
 int get_vdc_range(char* range_string);
 char* get_tx_vdc_range(int current_range);
 int get_vac_range(char* range_string);
@@ -88,4 +88,4 @@ int get_cap_range(char* range_string);
 char* get_tx_cap_range(int current_range);
 int get_temp_range(char* range_string);
 char* get_tx_temp_range(int current_range);
-struct SettingDescriptor get_function(char* function_string);
+SettingDescriptor get_function(char* function_string);
