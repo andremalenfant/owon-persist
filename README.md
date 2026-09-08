@@ -1,6 +1,6 @@
-# An ESP32-C3 add-on to the OWON XDM1041 Multi-meter to retain settings between power cycles
+# An ESP32-C3 add-on to the OWON XDM1041 multi-meter to retain settings between power cycles
 
-## Inpired by the work of:
+## Inspired by the work of:
   - TheHWCave for it's great documentation that is much better than owon's (https://github.com/TheHWcave/OWON-XDM1041/tree/main)
   - jantman (https://github.com/jantman/owon-xdm1041-server)
   - Elektroarzt (https://github.com/Elektroarzt/owon-xdm-remote)
@@ -19,6 +19,6 @@ The code might seem complicated at first, but the protocol implementation is qui
 
   - Adjust PINS define to your liking
   - Build and flash with platformio
-  - Connect RX and TX pin and PWR following the wiring in Elektroarzt, adjusting for the pins you chose. (https://github.com/Elektroarzt/owon-xdm-remote)
+  - Connect RX and TX pin and PWR following the wiring information in Elektroarzt's documentation, adjusting for the pins you chose. (https://github.com/Elektroarzt/owon-xdm-remote)
   - Included is a stl of a bracket to replace the OWON USB module. Just hot glue the ESP32-C3 to the flat and screw in the back of the multi-meter.
     source is at (https://cad.onshape.com/documents/60df04ce48f593a59c6e88b8/w/1018ae08cf5737908650381d/e/8b86b4a0dd7aa8b6646feab4)
