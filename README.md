@@ -1,4 +1,4 @@
-# An ESP32-C3 add-on to the OWON XDM1041 Multi-meter to add the persistence of configured settings.
+# An ESP32-C3 add-on to the OWON XDM1041 Multi-meter to retain settings between power ups.
 
 ## Inpired by the work of:
   - TheHWCave for it's great documentation that is much better than owon's (https://github.com/TheHWcave/OWON-XDM1041/tree/main)
